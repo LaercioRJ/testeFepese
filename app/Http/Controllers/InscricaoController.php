@@ -27,8 +27,10 @@ class InscricaoController extends Controller
 	    $inscricao->pessoa_fisica_id = $request->pessoa_fisica_id;
 	    $inscricao->cargo = $request->cargo;
 	    $inscricao->situacao = $request->situacao;
-	    
-        return json_encode(Inscricao::createInscricao($inscricao));
+
+        $inscricao->save();
+
+        return $inscricao->id;
     }
     
     public function update(Request $request)
@@ -70,7 +72,13 @@ class InscricaoController extends Controller
 
     public function show(Request $request, $id)
     {
-        return json_encode(Inscricao::loadInscricaoById($id));
+        $inscricao = Inscricao::find($id);
+
+        if (is_null($inscricao)) {
+
+        } else {
+            return json_encode($inscricao);
+        }
     }
 
     public function destroy(Request $request, $id)
@@ -78,6 +86,28 @@ class InscricaoController extends Controller
         $inscricao = Inscricao::find($id);
 	    
         return json_encode(Inscricao::deleteInscricao($inscricao));
+    }
+
+    public function getByPersonIdAndPosition(Request $request)
+    {
+        $this->validate(
+            $request,
+            [
+            	'pessoa_fisica_id' => 'required',
+			    'cargo' => 'required',
+            ]
+        );
+
+        $inscricao = Inscricao::where([
+            ['pessoa_fisica_id', $request->pessoa_fisica_id],
+            ['cargo', $request->cargo]])->get();
+
+
+        if (is_null($inscricao)) {
+            return response()->json(['message' => 'Inscricao not found'], 404);
+        } else {
+            return $inscricao;
+        }
     }
 
 }

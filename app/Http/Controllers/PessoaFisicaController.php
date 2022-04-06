@@ -32,8 +32,10 @@ class PessoaFisicaController extends Controller
 	    $pessoa->endereco = $request->endereco;
 	    $pessoa->cidade_id = $request->cidade_id;
 	    $pessoa->estado_id = $request->estado_id;
-	    
-        return json_encode(PessoaFisica::createPessoaFisica($pessoa));
+
+        $pessoa->save();
+
+        return $pessoa->id;
     }
     
     public function update(Request $request)
@@ -79,7 +81,13 @@ class PessoaFisicaController extends Controller
 
     public function show(Request $request, $id)
     {
-        return json_encode(PessoaFisica::loadPessoaFisicaById($id));
+        $pessoa = PessoaFisica::find($id);
+
+        if (is_null($pessoa)) {
+
+        } else {
+            return json_encode($pessoa);
+        }
     }
 
 
@@ -88,6 +96,17 @@ class PessoaFisicaController extends Controller
         $pessoa = PessoaFisica::find($id);
 	    
         return json_encode(PessoaFisica::deletePessoaFisica($pessoa));
+    }
+
+    public function findByCpf(Request $request, $cpf)
+    {
+        $pessoa = PessoaFisica::where('cpf', $cpf)->get();
+
+        if (count($pessoa) == 0) {
+            return response()->json(['message' => 'Pessoa Fisica not found'], 404);
+        } else {
+            return json_encode($pessoa);
+        }
     }
 
 }
