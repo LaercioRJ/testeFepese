@@ -17,8 +17,8 @@ class InscricaoController extends Controller
         $this->validate(
             $request,
             [
-			    'pessoa_fisica_id' => 'required',
-			    'cargo' => 'required',
+			    'pessoa_fisica_id' => 'required|numeric',
+			    'cargo' => 'required|max:50',
 			    'situacao' => 'required'
             ]
         );
@@ -38,9 +38,9 @@ class InscricaoController extends Controller
         $this->validate(
             $request,
             [
-            	'id' => 'required',
-			    'pessoa_fisica_id' => 'required',
-			    'cargo' => 'required',
+            	'id' => 'required|numeric',
+			    'pessoa_fisica_id' => 'required|numeric',
+			    'cargo' => 'required|max:50',
 			    'situacao' => 'required',
             ]
         );
@@ -75,7 +75,7 @@ class InscricaoController extends Controller
         $inscricao = Inscricao::find($id);
 
         if (is_null($inscricao)) {
-
+            return response()->json(['message' => 'Inscricao not found'], 404);
         } else {
             return json_encode($inscricao);
         }
@@ -93,8 +93,8 @@ class InscricaoController extends Controller
         $this->validate(
             $request,
             [
-            	'pessoa_fisica_id' => 'required',
-			    'cargo' => 'required',
+            	'pessoa_fisica_id' => 'required|numeric',
+			    'cargo' => 'required|max:50',
             ]
         );
 

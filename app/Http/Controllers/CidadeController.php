@@ -20,7 +20,7 @@ class CidadeController extends Controller
         $cidade = Cidade::find($id);
 
         if (is_null($cidade)) {
-
+            return response()->json(['message' => 'Cidade not found'], 404);
         } else {
             return json_encode($cidade);
         }
@@ -31,8 +31,8 @@ class CidadeController extends Controller
         $this->validate(
             $request,
             [
-                'estado_id' => 'required',
-			    'nome' => 'required',
+                'estado_id' => 'required|numeric',
+			    'nome' => 'required|max:40',
             ]
         );
         
@@ -67,6 +67,11 @@ class CidadeController extends Controller
     public function destroy(Request $request, $id)
     {
         $cidade = Cidade::find($id);
+
+        if (is_null($cidade)) {
+            return response()->json(['message' => 'Cidade not found'], 404);
+        }
+
         $response = $cidade->delete();
         
         return json_encode($response);

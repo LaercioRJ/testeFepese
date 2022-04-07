@@ -20,7 +20,7 @@ class EstadoController extends Controller
         $estado = Estado::find($id);
 
         if (is_null($estado)) {
-
+            return response()->json(['message' => 'Estado not found'], 404);
         } else {
             return json_encode($estado);
         }
@@ -31,8 +31,8 @@ class EstadoController extends Controller
         $this->validate(
             $request,
             [
-                'nome' => 'required',
-			    'sigla' => 'required',
+                'nome' => 'required|max:30',
+			    'sigla' => 'required|max:3',
             ]
         );
         
@@ -50,8 +50,8 @@ class EstadoController extends Controller
         $this->validate(
             $request,
             [
-                'nome' => 'required',
-                'sigla' => 'required',
+                'nome' => 'required|max:30',
+			    'sigla' => 'required|max:3',
             ]
         );
         
@@ -67,6 +67,11 @@ class EstadoController extends Controller
     public function destroy(Request $request, $id)
     {
         $estado = Estado::find($id);
+
+        if (is_null($estado)) {
+            return response()->json(['message' => 'Estado not found'], 404);
+        }
+
         $response = $estado->delete();
         
         return json_encode($response);

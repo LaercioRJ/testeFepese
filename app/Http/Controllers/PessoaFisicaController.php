@@ -18,11 +18,11 @@ class PessoaFisicaController extends Controller
         $this->validate(
             $request,
             [
-                'nome' => 'required',
-			    'cpf' => 'required',
-			    'endereco' => 'required',
-			    'cidade_id' => 'required',
-			    'estado_id' => 'required',
+                'nome' => 'required|max:40',
+			    'cpf' => 'required|numeric',
+			    'endereco' => 'required|max:50',
+			    'cidade_id' => 'required|numeric',
+			    'estado_id' => 'required|numeric',
             ]
         );
         
@@ -43,16 +43,21 @@ class PessoaFisicaController extends Controller
         $this->validate(
             $request,
             [
-                'id' => 'required',
-                'nome' => 'required',
-			    'cpf' => 'required',
-			    'endereco' => 'required',
-			    'cidade_id' => 'required',
-			    'estado_id' => 'required',
+                'id' => 'required|numeric',
+                'nome' => 'required|max:40',
+			    'cpf' => 'required|numeric',
+			    'endereco' => 'required|max:50',
+			    'cidade_id' => 'required|numeric',
+			    'estado_id' => 'required|numeric',
             ]
         );
         
 	    $pessoa = PessoaFisica::find($request->id);
+
+        if (is_null($pessoa)) {
+            return response()->json(['message' => 'Pessoa Fisica not found'], 404);
+        }
+
 	    $pessoa->nome = $request->nome;
 	    $pessoa->cpf = $request->cpf;
 	    $pessoa->endereco = $request->endereco;
@@ -84,7 +89,7 @@ class PessoaFisicaController extends Controller
         $pessoa = PessoaFisica::find($id);
 
         if (is_null($pessoa)) {
-
+            return response()->json(['message' => 'Pessoa Fisica not found'], 404);
         } else {
             return json_encode($pessoa);
         }
@@ -94,12 +99,17 @@ class PessoaFisicaController extends Controller
     public function destroy(Request $request, $id)
     {
         $pessoa = PessoaFisica::find($id);
+
+        if (is_null($pessoa)) {
+            return response()->json(['message' => 'Pessoa Fisica not found'], 404);
+        }
 	    
         return json_encode(PessoaFisica::deletePessoaFisica($pessoa));
     }
 
     public function findByCpf(Request $request, $cpf)
     {
+
         $pessoa = PessoaFisica::where('cpf', $cpf)->get();
 
         if (count($pessoa) == 0) {
